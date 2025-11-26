@@ -5,7 +5,21 @@ import (
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
+
+// STYLES
+var greenLine = lipgloss.NewStyle().
+	Foreground(lipgloss.Color("#04B575"))
+
+var blueLine = lipgloss.NewStyle().
+	Foreground(lipgloss.Color("#4a77ffff"))
+
+var yellowLine = lipgloss.NewStyle().
+	Foreground(lipgloss.Color("#e5de00ff"))
+
+var grayLine = lipgloss.NewStyle().
+	Foreground(lipgloss.Color("#9a9a9aff"))
 
 type State int
 
@@ -30,6 +44,16 @@ type model struct {
 	taskCounter int
 }
 
+func removeLastLetter(text *string) {
+	if len(*text) > 0 {
+		*text = (*text)[:len(*text)-1]
+	}
+}
+
+func deleteTask(tasks *[]Task, cursor *int) {
+	*tasks = append((*tasks)[:(*cursor)], (*tasks)[(*cursor)+1:]...)
+}
+
 func initialModel() model {
 	var m = model{
 		tasks:       []Task{},
@@ -50,7 +74,7 @@ func createEmptyTask(m *model) {
 		StartTime: time.Time{},
 		EndTime:   time.Time{},
 	})
-	m.cursor++
+
 	m.taskCounter++
 }
 
@@ -77,7 +101,18 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.cursor++
 			} else if m.cursor == len(m.tasks)-1 && len(m.tasks[m.cursor].Text) != 0 {
 				createEmptyTask(&m)
+				m.cursor++
 			}
+
+		case "backspace":
+			lineText := &m.tasks[m.cursor].Text
+
+			if len(*lineText) == 0 && m.cursor > 1 {
+				deleteTask(&m.tasks, &m.cursor)
+			} else {
+				removeLastLetter(lineText)
+			}
+
 		case "enter":
 			task := &m.tasks[m.cursor]
 
@@ -94,19 +129,22 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				task.EndTime = time.Time{}
 			}
 		}
+
+		if msg.Type == tea.KeyRunes {
+			m.tasks[m.cursor].Text += string(msg.Runes)
+		}
 	}
 
-	// Return the updated model to the Bubble Tea runtime for processing.
-	// Note that we're not returning a command.
 	return m, nil
 }
 
 func (m model) View() string {
 	s := "Tasks:\n"
 	for i, task := range m.tasks {
-		marker := " "
 		if i == m.cursor {
-			marker = ">"
+			s += ">"
+		} else {
+			s += " "
 		}
 		state := " "
 		switch task.State {
@@ -117,7 +155,23 @@ func (m model) View() string {
 		case Completed:
 			state = "x"
 		}
-		s += fmt.Sprintf("%s [%s] %s\n", marker, state, task.Text)
+
+		line := fmt.Sprintf("[%s] %s", state, task.Text)
+
+		switch task.State {
+		case Unmarked:
+			if i == m.cursor {
+				line = blueLine.Render(line)
+			} else {
+				line = grayLine.Render(line)
+			}
+		case InProgress:
+			line = yellowLine.Render(line)
+		case Completed:
+			line = greenLine.Render(line)
+		}
+
+		s += line + "\n"
 	}
 	s += fmt.Sprintf("\nTask counter: %d\nUse ↑/↓, enter to toggle, ctrl+c to quit.", m.taskCounter)
 	return s
@@ -129,3 +183,13 @@ func main() {
 		fmt.Println("Error running program:", err)
 	}
 }
+
+// TODOs
+/*
+	Refactor to organize code
+	Make it adapt to the whole terminal size
+	clear terminal, only showing list
+	Fix words to break at the end of the line
+	Add persistency
+	Add ways to press "tab" to create subitens
+*/
