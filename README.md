@@ -11,3 +11,12 @@ The project allows you to create, navigate, and toggle tasks directly in the ter
 The interface is minimalistic, focused on productivity in the terminal, automatically adding new tasks when navigating to the last line and allowing simple state toggling for each task.
 
 Tedious aims to provide a fast and efficient way to manage tasks without leaving the terminal, keeping everything organized in an intuitive way, while keeping track of the time taken to complete each one of your tasks.
+
+## TODOs
+/*
+	- Make it adapt to the whole terminal size
+	- Clear terminal, only showing list
+	- Fix words to break at the end of the line
+	- Add persistency
+	- Add ways to press "tab" to create subitens
+*/
