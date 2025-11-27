@@ -11,6 +11,8 @@ type Model struct {
 	tasks       []mod.Task
 	cursor      int // Stores in which task we're in
 	taskCounter int
+	width       int
+	height      int
 }
 
 func StartModel() Model {
