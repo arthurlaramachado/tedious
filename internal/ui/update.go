@@ -32,12 +32,27 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.cursor++
 			}
 
+		case "ctrl+n":
+			m.CreateEmptyTaskAt(m.cursor)
+
+		case "ctrl+d":
+			if len(m.tasks) > 1 {
+				m.DeleteTask()
+
+				if m.cursor == 1 {
+					m.cursor--
+				}
+			}
+
 		case "backspace":
 			lineText := &m.tasks[m.cursor].Text
 
-			if len(*lineText) == 0 && m.cursor >= 1 {
+			if len(*lineText) == 0 && len(m.tasks) > 1 {
 				m.DeleteTask()
-				m.cursor--
+
+				if m.cursor == 1 {
+					m.cursor--
+				}
 			} else {
 				m.RemoveTextLastLetter()
 			}

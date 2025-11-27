@@ -50,6 +50,20 @@ func (m *Model) CreateEmptyTask() {
 	m.taskCounter++
 }
 
+func (m *Model) CreateEmptyTaskAt(index int) {
+	newTask := mod.Task{
+		ID:        m.taskCounter,
+		Text:      "",
+		State:     mod.Unmarked,
+		StartTime: time.Time{},
+		EndTime:   time.Time{},
+	}
+
+	m.tasks = append(m.tasks[:index], append([]mod.Task{newTask}, m.tasks[index:]...)...)
+
+	m.taskCounter++
+}
+
 func (m *Model) RemoveTextLastLetter() {
 	task := &m.tasks[m.cursor]
 	if len(task.Text) > 0 {
