@@ -15,6 +15,15 @@ const (
 
 const padding = 4
 
+func GetInfoLine(width int) lipgloss.Style {
+	return lipgloss.NewStyle().
+		Italic(true).
+		PaddingLeft(4).
+		Foreground(lipgloss.Color("#ffffffff")).
+		Bold(true).
+		Width(width - padding)
+}
+
 func GetLineColor(c Color, width int) lipgloss.Style {
 	var color_hex string
 

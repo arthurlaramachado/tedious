@@ -12,14 +12,15 @@ func (m Model) View() string {
 	yellowLine := comp.GetLineColor(comp.YELLOW, m.width)
 	blueLine := comp.GetLineColor(comp.BLUE, m.width)
 	greyLine := comp.GetLineColor(comp.GREY, m.width)
+	infoLine := comp.GetInfoLine(m.width)
 
 	s := "Tasks:\n"
 	for i, task := range m.tasks {
+		cursor := " "
 		if i == m.cursor {
-			s += ">"
-		} else {
-			s += " "
+			cursor = ">"
 		}
+
 		state := " "
 		switch task.State {
 		case mod.Unmarked:
@@ -43,9 +44,18 @@ func (m Model) View() string {
 			line = yellowLine.Render(line)
 		case mod.Completed:
 			line = greenLine.Render(line)
+
+			duration := task.EndTime.Sub(task.StartTime)
+
+			hours := int(duration.Hours())
+			minutes := int(duration.Minutes()) % 60
+			seconds := int(duration.Seconds()) % 60
+
+			timeInfo := fmt.Sprintf("Duration: %dh %dm %ds", hours, minutes, seconds)
+			line += "\n" + infoLine.Render(timeInfo)
 		}
 
-		s += line + "\n"
+		s += cursor + line + "\n"
 	}
 	s += fmt.Sprintf("\nTask counter: %d\nUse ↑/↓, enter to toggle, ctrl+c to quit.", m.taskCounter)
 	return s
