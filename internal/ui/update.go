@@ -24,7 +24,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.cursor--
 			}
 
-		case "down":
+		case "down", "enter":
 			if m.cursor < len(m.tasks)-1 {
 				m.cursor++
 			} else if m.cursor == len(m.tasks)-1 && len(m.tasks[m.cursor].Text) != 0 {
@@ -35,13 +35,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "backspace":
 			lineText := &m.tasks[m.cursor].Text
 
-			if len(*lineText) == 0 && m.cursor > 1 {
+			if len(*lineText) == 0 && m.cursor >= 1 {
 				m.DeleteTask()
+				m.cursor--
 			} else {
 				m.RemoveTextLastLetter()
 			}
 
-		case "enter":
+		case "tab":
 			task := &m.tasks[m.cursor]
 
 			switch task.State {
@@ -56,6 +57,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				task.StartTime = time.Time{}
 				task.EndTime = time.Time{}
 			}
+
+		case " ":
+			m.AddChar(" ")
 		}
 
 		if msg.Type == tea.KeyRunes {
