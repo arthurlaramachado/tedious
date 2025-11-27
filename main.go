@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	m := ui.NewModel()
+	m := ui.StartModel()
 	p := tea.NewProgram(m)
 	if _, err := p.Run(); err != nil {
 		fmt.Println("Error running program:", err)

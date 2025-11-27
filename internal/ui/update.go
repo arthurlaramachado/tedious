@@ -3,6 +3,8 @@ package ui
 import (
 	"time"
 
+	mod "github.com/arthurlaramachado/tedious/internal/models"
+	utils "github.com/arthurlaramachado/tedious/internal/utils"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -13,6 +15,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 
 		case "ctrl+c":
+			utils.SaveState(m.tasks)
+
 			return m, tea.Quit
 
 		case "up":
@@ -41,14 +45,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			task := &m.tasks[m.cursor]
 
 			switch task.State {
-			case Unmarked:
-				task.State = InProgress
+			case mod.Unmarked:
+				task.State = mod.InProgress
 				task.StartTime = time.Now()
-			case InProgress:
-				task.State = Completed
+			case mod.InProgress:
+				task.State = mod.Completed
 				task.EndTime = time.Now()
-			case Completed:
-				task.State = Unmarked
+			case mod.Completed:
+				task.State = mod.Unmarked
 				task.StartTime = time.Time{}
 				task.EndTime = time.Time{}
 			}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	comp "github.com/arthurlaramachado/tedious/internal/components"
+	mod "github.com/arthurlaramachado/tedious/internal/models"
 )
 
 func (m Model) View() string {
@@ -16,26 +17,26 @@ func (m Model) View() string {
 		}
 		state := " "
 		switch task.State {
-		case Unmarked:
+		case mod.Unmarked:
 			state = " "
-		case InProgress:
+		case mod.InProgress:
 			state = "~"
-		case Completed:
+		case mod.Completed:
 			state = "x"
 		}
 
 		line := fmt.Sprintf("[%s] %s", state, task.Text)
 
 		switch task.State {
-		case Unmarked:
+		case mod.Unmarked:
 			if i == m.cursor {
 				line = comp.BlueLine.Render(line)
 			} else {
 				line = comp.GrayLine.Render(line)
 			}
-		case InProgress:
+		case mod.InProgress:
 			line = comp.YellowLine.Render(line)
-		case Completed:
+		case mod.Completed:
 			line = comp.GreenLine.Render(line)
 		}
 

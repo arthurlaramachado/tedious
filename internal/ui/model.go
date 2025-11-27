@@ -2,48 +2,45 @@ package ui
 
 import (
 	"time"
+
+	mod "github.com/arthurlaramachado/tedious/internal/models"
+	"github.com/arthurlaramachado/tedious/internal/utils"
 )
-
-type State int
-
-const (
-	Unmarked = iota
-	InProgress
-	Completed
-)
-
-type Task struct {
-	ID        int
-	Text      string
-	Cursor    int // Stores in which letter of the string the cursor was
-	State     State
-	StartTime time.Time
-	EndTime   time.Time
-}
 
 type Model struct {
-	tasks       []Task
+	tasks       []mod.Task
 	cursor      int // Stores in which task we're in
 	taskCounter int
 }
 
-func NewModel() Model {
-	var m = Model{
-		tasks:       []Task{},
-		cursor:      0,
-		taskCounter: 0,
+func StartModel() Model {
+	var tasks []mod.Task
+	jsonBlob := utils.ReadState()
+
+	if jsonBlob != nil {
+		tasks = jsonBlob
+	} else {
+		tasks = []mod.Task{}
 	}
 
-	m.CreateEmptyTask()
+	var m = Model{
+		tasks:       tasks,
+		cursor:      0,
+		taskCounter: len(tasks),
+	}
+
+	if len(tasks) == 0 {
+		m.CreateEmptyTask()
+	}
 
 	return m
 }
 
 func (m *Model) CreateEmptyTask() {
-	m.tasks = append(m.tasks, Task{
+	m.tasks = append(m.tasks, mod.Task{
 		ID:        m.taskCounter,
 		Text:      "",
-		State:     Unmarked,
+		State:     mod.Unmarked,
 		StartTime: time.Time{},
 		EndTime:   time.Time{},
 	})
