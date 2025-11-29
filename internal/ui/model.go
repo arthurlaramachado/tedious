@@ -38,6 +38,18 @@ func StartModel() Model {
 	return m
 }
 
+func (m *Model) RearrangeTasksUp(index int) {
+	copy := m.tasks[index-1]
+	m.tasks[index-1] = m.tasks[index]
+	m.tasks[index] = copy
+}
+
+func (m *Model) RearrangeTasksDown(index int) {
+	copy := m.tasks[index+1]
+	m.tasks[index+1] = m.tasks[index]
+	m.tasks[index] = copy
+}
+
 func (m *Model) CreateEmptyTask() {
 	m.tasks = append(m.tasks, mod.Task{
 		ID:        m.taskCounter,

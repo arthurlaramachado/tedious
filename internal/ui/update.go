@@ -44,6 +44,18 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 			}
 
+		case "ctrl+k":
+			if m.cursor != 0 {
+				m.RearrangeTasksUp(m.cursor)
+				m.cursor--
+			}
+
+		case "ctrl+j":
+			if m.cursor != len(m.tasks)-1 {
+				m.RearrangeTasksDown(m.cursor)
+				m.cursor++
+			}
+
 		case "backspace":
 			lineText := &m.tasks[m.cursor].Text
 
