@@ -8,12 +8,6 @@ import (
 )
 
 func (m Model) View() string {
-	greenLine := comp.GetLineColor(comp.GREEN, m.width)
-	yellowLine := comp.GetLineColor(comp.YELLOW, m.width)
-	blueLine := comp.GetLineColor(comp.BLUE, m.width)
-	greyLine := comp.GetLineColor(comp.GREY, m.width)
-	infoLine := comp.GetInfoLine(m.width)
-
 	s := "Tasks:\n"
 	for i, task := range m.tasks {
 		cursor := " "
@@ -36,14 +30,14 @@ func (m Model) View() string {
 		switch task.State {
 		case mod.Unmarked:
 			if i == m.cursor {
-				line = blueLine.Render(line)
+				line = comp.GetLineColor(comp.BLUE, m.width, task.IsSubtask).Render(line)
 			} else {
-				line = greyLine.Render(line)
+				line = comp.GetLineColor(comp.GREY, m.width, task.IsSubtask).Render(line)
 			}
 		case mod.InProgress:
-			line = yellowLine.Render(line)
+			line = comp.GetLineColor(comp.YELLOW, m.width, task.IsSubtask).Render(line)
 		case mod.Completed:
-			line = greenLine.Render(line)
+			line = comp.GetLineColor(comp.GREEN, m.width, task.IsSubtask).Render(line)
 
 			duration := task.EndTime.Sub(task.StartTime)
 
@@ -52,7 +46,7 @@ func (m Model) View() string {
 			seconds := int(duration.Seconds()) % 60
 
 			timeInfo := fmt.Sprintf("Duration: %dh %dm %ds", hours, minutes, seconds)
-			line += "\n" + infoLine.Render(timeInfo)
+			line += "\n" + comp.GetInfoLine(m.width, task.IsSubtask).Render(timeInfo)
 		}
 
 		s += cursor + line + "\n"

@@ -90,3 +90,7 @@ func (m *Model) DeleteTask() {
 func (m *Model) AddChar(char string) {
 	m.tasks[m.cursor].Text += char
 }
+
+func (m *Model) SetSubtask() {
+	m.tasks[m.cursor].IsSubtask = !m.tasks[m.cursor].IsSubtask
+}

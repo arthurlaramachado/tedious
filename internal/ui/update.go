@@ -69,7 +69,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.RemoveTextLastLetter()
 			}
 
-		case "tab":
+		case "ctrl+b":
 			task := &m.tasks[m.cursor]
 
 			switch task.State {
@@ -84,6 +84,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				task.StartTime = time.Time{}
 				task.EndTime = time.Time{}
 			}
+
+		case "tab":
+			m.SetSubtask()
 
 		case " ":
 			m.AddChar(" ")

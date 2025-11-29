@@ -15,17 +15,30 @@ const (
 
 const padding = 4
 
-func GetInfoLine(width int) lipgloss.Style {
+func GetInfoLine(width int, isSubtask bool) lipgloss.Style {
+	var paddingLeft int
+
+	if isSubtask {
+		paddingLeft = 8
+	} else {
+		paddingLeft = 4
+	}
+
 	return lipgloss.NewStyle().
 		Italic(true).
-		PaddingLeft(4).
+		PaddingLeft(paddingLeft).
 		Foreground(lipgloss.Color("#ffffffff")).
 		Bold(true).
 		Width(width - padding)
 }
 
-func GetLineColor(c Color, width int) lipgloss.Style {
+func GetLineColor(c Color, width int, isSubtask bool) lipgloss.Style {
 	var color_hex string
+	var paddingLeft int = 0
+
+	if isSubtask {
+		paddingLeft = 4
+	}
 
 	switch c {
 	case GREY:
@@ -40,5 +53,6 @@ func GetLineColor(c Color, width int) lipgloss.Style {
 
 	return lipgloss.NewStyle().
 		Foreground(lipgloss.Color(color_hex)).
+		PaddingLeft(paddingLeft).
 		Width(width - padding)
 }
